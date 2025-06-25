@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.api import weather
 from app.api import pollution
+from app.services.scheduler import start_scheduler
 
 app = FastAPI(title="Экомониторинг Москвы")
 
@@ -13,4 +14,10 @@ app.include_router(pollution.router, prefix="/api/air")
 def root():
     return {"message": "Экомониторинг запущен"}
 
-# добавить Авто-обновление раз в час
+@app.on_event("startup")
+async def on_startup():
+    start_scheduler()
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    pass

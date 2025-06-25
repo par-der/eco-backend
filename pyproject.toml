@@ -15,6 +15,7 @@ dependencies = [
     "aiohttp",
     "pydantic",
     "httpx",
+    "APScheduler",
 ]
 
 [tool.uv]

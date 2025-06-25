@@ -9,4 +9,4 @@ __pycache__/
 # pytest
 .coverage
 
-pgdata/ч
+pgdata/

@@ -1,12 +1,28 @@
+####################  Python  ####################
 *.py[cod]
 __pycache__/
-.env
-*.env
+.venv/
+.mypy_cache/
+.pytest_cache/
+.coverage
+dist/
+*.log
+
+####################  Node / React  ##############
+webapp/node_modules/
+webapp/.vite/
+webapp/dist/
+webapp/.env
+webapp/package-lock.json
+webapp/pnpm-lock.yaml
+webapp/yarn.lock
+
+####################  IDE & Tools  ###############
 .idea/
 .vscode/
-# poetry/uv
-.venv/
-# pytest
-.coverage
+*.swp
+.DS_Store
 
+####################  Docker / Compose ###########
 pgdata/
+.env

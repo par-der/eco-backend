@@ -1,58 +1,51 @@
-## -------------------- Builder Stage -------------------- ##
-FROM python:3.13-bookworm AS builder
+########################  STAGE 1  — Web build  ########################
+FROM node:20-alpine AS webbuild
+WORKDIR /webapp
 
-RUN apt-get update || true && \
-    apt-get install --no-install-recommends -y \
-        tzdata \
-        build-essential && \
+RUN corepack enable && corepack prepare pnpm@9.1.2 --activate
+
+COPY webapp/pnpm-lock.yaml webapp/package.json ./
+RUN pnpm install --frozen-lockfile
+
+COPY webapp .
+RUN pnpm run build
+
+########################  STAGE 2  — Python deps #######################
+FROM python:3.13-bookworm AS buildpy
+
+# системные пакеты
+RUN apt-get update && apt-get install --no-install-recommends -y \
+        build-essential tzdata && \
     ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Установим UV
+# UV
 ADD https://astral.sh/uv/install.sh /install.sh
-RUN chmod -R 655 /install.sh && /install.sh && rm /install.sh
-
-# Укажем путь к бинарникам UV
+RUN chmod 655 /install.sh && /install.sh && rm /install.sh
 ENV PATH="/root/.local/bin:$PATH"
 
-# Рабочая директория
 WORKDIR /app
 
-# Копируем зависимости
+# зависимости Python  (+ APScheduler уже в pyproject)
 COPY pyproject.toml .
-
-# Синхронизация окружения
 RUN uv sync
 
-# Для совместимости (по желанию)
-RUN uv pip freeze > requirements.txt
-
-## -------------------- Production Stage -------------------- ##
+########################  STAGE 3  — Runtime image #####################
 FROM python:3.13-slim-bookworm AS production
 
-# Настройки из окружения
-ENV DB_PASSWORD=${DB_PASSWORD}
-ENV DB_USER=${DB_USER}
-ENV DB_NAME=${DB_NAME}
-ENV DB_HOST=${DB_HOST}
-ENV ACCESS_TOKEN_SECRET_KEY=${ACCESS_TOKEN_SECRET_KEY}
 ENV PORT=8080
 
-# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем весь проект
+# проект
 COPY . .
-
-# Копируем виртуальное окружение
-COPY --from=builder /app/.venv .venv
-
-# Прописываем виртуальное окружение в PATH
+# готовый web-build
+COPY --from=webbuild /webapp/dist webapp/dist
+# виртуалка Python
+COPY --from=buildpy   /app/.venv .venv
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Открываем порт
+# Экспонируем порт и запускаем
 EXPOSE ${PORT}
-
-# Запуск приложения
-CMD ["uvicorn", "app.main:app", "--log-level", "info", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

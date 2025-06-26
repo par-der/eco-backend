@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.api import weather
 from app.api import pollution
 from app.services.scheduler import start_scheduler
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="Экомониторинг Москвы")
 
@@ -9,6 +10,7 @@ app.include_router(weather.router, prefix="/api/weather")
 # app.include_router(pollution.router, prefix="/pollution")
 # app.include_router(prediction.router, prefix="/prediction")
 app.include_router(pollution.router, prefix="/api/air")
+app.mount("/webapp", StaticFiles(directory="webapp/dist", html=True), name="webapp")
 
 @app.get("/")
 def root():

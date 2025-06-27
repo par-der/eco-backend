@@ -7,3 +7,5 @@ python-dotenv
 requests
 pydantic
 aiohttp
+greenlet
+apscheduler

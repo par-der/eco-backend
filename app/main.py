@@ -3,8 +3,14 @@ from app.api import weather
 from app.api import pollution
 from app.services.scheduler import start_scheduler
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Экомониторинг Москвы")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['http://localhost:5174']
+)
 
 app.include_router(weather.router, prefix="/api/weather")
 # app.include_router(pollution.router, prefix="/pollution")

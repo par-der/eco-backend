@@ -2,10 +2,11 @@ import httpx
 from app.models.weather import Weather
 from app.db.session import AsyncSessionLocal
 from datetime import datetime
+from sqlalchemy.ext.asyncio import AsyncSession
 
 LAT, LON = 55.75, 37.62  # Москва
 
-async def fetch_and_save_weather():
+async def fetch_and_save_weather(db: AsyncSession):
     async with httpx.AsyncClient() as client:
         url = (
             f"https://api.open-meteo.com/v1/forecast?"

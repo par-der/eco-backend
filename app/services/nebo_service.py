@@ -2,6 +2,7 @@ import os, time, hashlib, httpx
 from datetime import datetime
 from app.db.session import AsyncSessionLocal
 from app.models.pollution import Pollution
+from sqlalchemy.ext.asyncio import AsyncSession
 
 BASE_URL     = "https://nebo.live/api/v2"
 TOKEN        = os.getenv("NEBO_TOKEN")
@@ -15,7 +16,7 @@ def _auth_params() -> dict:
     hash_ = full[5:16]      # символы с 5 по 15 включительно
     return {"time": ts, "hash": hash_}
 
-async def fetch_city_air():
+async def fetch_city_air(session: AsyncSession):
     url     = f"{BASE_URL}/cities/{CITY_SLUG}"
     headers = {"X-Auth-Nebo": TOKEN}
     params  = _auth_params()

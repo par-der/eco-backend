@@ -92,7 +92,7 @@ export default function Map2gis({ temperature, aqi, activeView }: Props) {
 
     const updateOverlay = () => {
       if (circleRef.current) {
-        mapRef.current.removeMarker(circleRef.current);
+        circleRef.current.destroy();
       }
 
       let color = 'rgba(100, 100, 100, 0.2)';

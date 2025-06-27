@@ -9,8 +9,12 @@ export default defineConfig({
   server: {
     host: true,
     allowedHosts: ['.ngrok-free.app'],
-    proxy: {
-      '/api': 'http://localhost:8080',
-    },
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:8000', // Порт вашего FastAPI
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, '')
+    //   }
+    // },
   },
 })

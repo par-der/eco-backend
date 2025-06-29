@@ -6,7 +6,7 @@ API   = f"https://api.telegram.org/bot{TOKEN}"
 btn = {
     "type": "web_app",
     "text": "🌍 Экология Москвы",
-    "web_app": {"url": "https://a932-138-124-99-150.ngrok-free.app/webapp/"}
+    "web_app": {"url": "https://dab8-138-124-99-150.ngrok-free.app/webapp/"}
 }
 
 requests.post(f"{API}/sendMessage", json={
@@ -15,7 +15,7 @@ requests.post(f"{API}/sendMessage", json={
     "reply_markup": {
         "inline_keyboard": [[
             {"text": "🌍 Экология Москвы",
-             "web_app": {"url": "https://a932-138-124-99-150.ngrok-free.app/"}}
+             "web_app": {"url": "https://dab8-138-124-99-150.ngrok-free.app/"}}
         ]]
     }
 })

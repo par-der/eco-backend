@@ -23,7 +23,7 @@ async def fetch_city_air(session: AsyncSession):
 
     async with httpx.AsyncClient(timeout=10) as client:
         r = await client.get(url, headers=headers, params=params)
-        r.raise_for_status()
+        print("NEBO ERROR:", r.status_code, r.text)
         sensors = r.json()          # список всех датчиков города
 
     # берём мгновенные значения каждого сенсора → усредняем

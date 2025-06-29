@@ -9,7 +9,10 @@ app = FastAPI(title="Экомониторинг Москвы")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:5174']
+    allow_origins=['*'],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,
 )
 
 app.include_router(weather.router, prefix="/api/weather")
